@@ -94,6 +94,7 @@ Currently implemented are the following redis commands:
 * mset
 * msetnx
 * setex
+* psetex
 * setnx
 * ping
 
