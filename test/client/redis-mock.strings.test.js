@@ -383,6 +383,54 @@ describe("setex", function () {
 
 });
 
+describe("psetex", function () {
+
+  this.timeout(5000); // eslint-disable-line no-invalid-this
+
+  it("should set a key", function (done) {
+    var key = 'test_persist';
+    r.psetex(key, 1000, "val", function (err, result) {
+      result.should.equal("OK");
+      r.get(key, function (err, result) {
+        result.should.equal("val");
+        done();
+      });
+    });
+  });
+
+  it("should set a disappearing key", function (done) {
+    var key = 'test_disappearing';
+    r.psetex(key, 1, "val", cb);
+
+    function cb(err, result) {
+      result.should.be.ok();
+
+      setTimeout(function () {
+        r.exists(key, function (err, result) {
+          result.should.equal(0);
+          done();
+        });
+      }, 100);
+    }
+  });
+
+  it("should set a key without a callback involved", function (done) {
+    var key = 'test_persist_wo_callback';
+
+    r.psetex(key, 1000, "val");
+
+    setTimeout(function () {
+      r.get(key, function (err, result) {
+        result.should.equal("val");
+        r.del(key);
+        done();
+      });
+    }, 100);
+
+  });
+
+});
+
 describe("setnx", function () {
   it("should set a key", function (done) {
 
